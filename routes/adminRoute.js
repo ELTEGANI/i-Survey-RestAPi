@@ -2,7 +2,8 @@ const express = require('express');
 const {body} = require('express-validator/check');
 const admincontroller = require('../controllers/adminController');
 const Admin = require('../models/Admin');
-
+const Collector = require('../models/Collector');
+const isAuth = require('./Middleware/authMiddleware');
 
 
 const router = express.Router();
@@ -27,6 +28,23 @@ router.post('/addadmin',[body('companyemail')
        ],admincontroller.signup);
 
 router.post('/login',admincontroller.login);
+
+router.post('/addcollector',isAuth,[body('email')
+.isEmail()
+.withMessage('Please Enter Valid EmailAddress')
+.custom((value,{req})=>{
+    return Collector.findOne({where:{email:value}}).then(collectordoc=>{
+       if(collectordoc){
+           return Promise.reject('Collector Already Exists');
+       }
+    });
+})
+.normalizeEmail(),
+body('password').trim().isLength({min:3}),
+body('firstname').trim().not().isEmpty(),
+body('lastname').trim().not().isEmpty(),
+body('email').trim().not().isEmpty()      
+],admincontroller.signUpCollector);
 
 
 

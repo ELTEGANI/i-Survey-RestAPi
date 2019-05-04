@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../config/configration');
 
-const Admin = sequelize.define('Admins', {
+const Collector = sequelize.define('Collectors', {
 id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
@@ -16,15 +16,7 @@ lastname: {
   type: Sequelize.STRING,
   allowNull: false
 },
-companyname: {
-    type: Sequelize.STRING,
-    allowNull: false
-},
-companyfield: {
-    type: Sequelize.STRING,
-    allowNull: false
-},
-companyemail: {
+email: {
     type: Sequelize.STRING,
     allowNull: false
 },
@@ -34,4 +26,4 @@ password: {
 }
 });
 
-module.exports = Admin;
+module.exports = Collector;

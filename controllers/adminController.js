@@ -1,5 +1,6 @@
 const {validationResult} = require('express-validator/check');
 const Admin = require('../models/Admin');
+const Collector = require('../models/Collector');
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
 
@@ -30,7 +31,7 @@ exports.signup = (req,res,next) =>{
             password:hashedpw
         }).then(result =>{
             res.status(201).json({
-             message:'Admin Created Successfylly',
+             message:'Admin Created Successfully',
              Admin:result
          });
          })
@@ -43,7 +44,6 @@ exports.signup = (req,res,next) =>{
              }
         )  
     })
-
 }
 
 
@@ -78,4 +78,42 @@ exports.login = (req,res,next) => {
         }
         next(err);
        })
+}
+
+exports.signUpCollector = (req,res,next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+       const error = new Error('validation Failed');
+       error.statusCode = 422;
+       error.data = errors.array();
+       throw error
+    }
+    const firstname     = req.body.firstname;
+    const lastname      = req.body.lastname;
+    const email         = req.body.email;
+    const password      = req.body.password;
+
+    bcrypt.hash(password,12)
+    .then(hashedpw=>{
+        Collector.create({
+            firstname:firstname,
+            lastname:lastname,
+            email:email,
+            password:hashedpw
+        }).then(result =>{
+            res.status(201).json({
+             message:'Collector Created Successfully',
+             Collector:result
+         });
+         })
+        .catch(
+            err =>{
+                if(!err.statusCode){
+                    err.statusCode = 500;
+                }
+                next(err);
+             }
+        )  
+    })
+
 }

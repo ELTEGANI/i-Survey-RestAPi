@@ -37,7 +37,7 @@ app.use((error,req,res,next)=>{
 
     
 sequelize.sync().then(result =>{
-    console.log(result);
+   // console.log(result);
     app.listen(8080); 
 }).catch(err =>{
     console.log(err)
