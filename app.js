@@ -1,8 +1,13 @@
-const express = require('express');
-const sequelize = require('./config/configration');
+const express    = require('express');
+const sequelize  = require('./config/configration');
 const bodyParser = require('body-parser');
-  
-
+const Collectors = require('./models/Collector');
+const Admins     = require('./models/Admin');
+const Surveys    = require('./models/Survey');
+const Questions  = require('./models/Questions');
+const Questiontype = require('./models/question_type');
+const QuestionAnswer = require('./models/Question_answers');
+const SurveyQuestions = require('./models/Survey_Questions');
 //set routes
 const adminRoute = require('./routes/adminRoute');
 
@@ -21,6 +26,7 @@ app.use((req, res, next) => {
 });
 
 
+
 app.use('/Admin',adminRoute);
 
 app.use((error,req,res,next)=>{
@@ -31,13 +37,28 @@ app.use((error,req,res,next)=>{
     res.status(status).json({
     message:message,
     data:data
-    });
-
+    });   
 })
 
-    
-sequelize.sync().then(result =>{
-   // console.log(result);
+Collectors.belongsTo(Admins);
+Admins.hasMany(Collectors);
+
+Surveys.belongsTo(Admins);
+Admins.hasMany(Surveys);
+
+Questions.hasOne(Questiontype);
+
+QuestionAnswer.belongsTo(Questions);
+Questions.hasMany(QuestionAnswer);
+
+Surveys.belongsToMany(Questions,{through:SurveyQuestions});
+Questions.belongsToMany(Surveys,{through:SurveyQuestions});
+
+sequelize
+    //.sync({force:true})
+    .sync()
+    .then(result =>{
+     console.log(result);  
     app.listen(8080); 
 }).catch(err =>{
     console.log(err)

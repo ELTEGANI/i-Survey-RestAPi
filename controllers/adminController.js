@@ -1,6 +1,11 @@
 const {validationResult} = require('express-validator/check');
 const Admin = require('../models/Admin');
 const Collector = require('../models/Collector');
+const Surveys = require('../models/Survey');
+const Questions = require('../models/Questions');
+const Qusetiontype = require('../models/question_type');
+const QuestionAnswer = require('../models/Question_answers');
+const SurveyQuestion = require('../models/Survey_Questions');
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
 
@@ -99,8 +104,9 @@ exports.signUpCollector = (req,res,next) => {
             firstname:firstname,
             lastname:lastname,
             email:email,
-            password:hashedpw
-        }).then(result =>{
+            password:hashedpw,
+            AdminId:req.companyId
+                }).then(result =>{
             res.status(201).json({
              message:'Collector Created Successfully',
              Collector:result
@@ -117,3 +123,94 @@ exports.signUpCollector = (req,res,next) => {
     })
 
 }
+
+exports.createSurvey = (req,res,next) =>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+       const error = new Error('validation Failed');
+       error.statusCode = 422;
+       error.data = errors.array();
+       throw error
+    }
+    const surveyTitle            = req.body.title;
+    const surveyDescription      = req.body.description;
+
+    Surveys.create({
+        title:surveyTitle,
+        description:surveyDescription,
+        AdminId:req.companyId
+        }).then(result =>{
+        res.status(201).json({
+         message:'Survey Created Successfully',
+         Surveys:result,
+     }
+     
+     );
+     }).catch( err =>{
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+     })
+}
+
+ exports.createQuestion =(req,res,next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+       const error = new Error('validation Failed');
+       error.statusCode = 422;
+       error.data = errors.array();
+       throw error
+    }
+    const question      = req.body.Qusetion;
+    Questions.create({
+        Qusetion:question
+        })
+        .then(question =>{
+            console.log(question);
+            const qid = question.id;
+    Qusetiontype.create({
+            question_type:req.body.Qusetiontype,
+            QuestionId:qid
+        }).then(qtype=>{
+           console.log(qtype);
+    QuestionAnswer.create({
+        QuestionAnswer:req.body.Qusetionanswers,
+        QuestionId:qid
+    }).then(qanswers=>{
+        console.log(qanswers);
+    SurveyQuestion.create({
+        SurveyId:req.body.Surveyid,
+        QuestionId:qid
+    }).then(surveyquestion=>{
+           res.status(201).json({
+           message:'Question Created Successfully',
+           Question:surveyquestion,
+           }
+    );
+    }).catch(err=>{
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    })    
+    }).catch(err=>{
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    })
+        }).catch(err=>{
+            if(!err.statusCode){
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+     })
+     .catch( err =>{
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+     })
+ }

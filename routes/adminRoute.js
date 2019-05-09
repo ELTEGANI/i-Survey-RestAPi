@@ -3,6 +3,8 @@ const {body} = require('express-validator/check');
 const admincontroller = require('../controllers/adminController');
 const Admin = require('../models/Admin');
 const Collector = require('../models/Collector');
+const Survey = require('../models/Survey');
+const Question = require('../models/Questions');
 const isAuth = require('./Middleware/authMiddleware');
 
 
@@ -47,6 +49,33 @@ body('email').trim().not().isEmpty()
 ],admincontroller.signUpCollector);
 
 
+router.post('/createsurvey',isAuth,[body('title')
+.custom((value,{req})=>{
+    return Survey.findOne({where:{title:value}}).then(Surveydoc=>{
+       if(Surveydoc){
+           return Promise.reject('Survey Already Exists');
+       }
+    });
+})
+,body('title').trim().trim().not().isEmpty(),
+body('description').trim().not().isEmpty(),
+],admincontroller.createSurvey)
 
+
+
+router.post('/createquestion',isAuth,[body('Qusetion')
+.custom((value,{req})=>{
+    return Question.findOne({where:{Qusetion:value}}).then(Questiondoc=>{
+       if(Questiondoc){
+           return Promise.reject('Question Already Exists');
+       }
+    });
+})
+,body('Qusetion').trim().not().isEmpty()
+,body('Qusetiontype').trim().not().isEmpty()
+,body('Qusetionanswers').trim().not().isEmpty()
+,body('Surveyid').trim().not().isEmpty()
+],admincontroller.createQuestion)
+      
 
 module.exports = router;

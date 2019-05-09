@@ -2,10 +2,10 @@ const Sequelize = require('sequelize');
 const sequelize = require('../config/configration');
 
 const Admin = sequelize.define('Admins', {
-id: {
+ id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
-    primaryKey: true,
+     primaryKey: true,
     allowNull: false
 },
 firstname: {
