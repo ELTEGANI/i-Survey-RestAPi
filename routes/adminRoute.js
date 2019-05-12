@@ -6,6 +6,7 @@ const Collector = require('../models/Collector');
 const Survey = require('../models/Survey');
 const Question = require('../models/Questions');
 const isAuth = require('./Middleware/authMiddleware');
+const isCollectorAuth = require('./Middleware/authMiddlewareForCollector');  
 
 
 const router = express.Router();
@@ -77,5 +78,16 @@ router.post('/createquestion',isAuth,[body('Qusetion')
 ,body('Surveyid').trim().not().isEmpty()
 ],admincontroller.createQuestion)
       
+
+router.post('/loginCollector',admincontroller.loginCollector);
+
+
+router.post('/addSamplePerson',isCollectorAuth,[
+    body('age').trim().not().isEmpty(),
+    body('gender').trim().not().isEmpty(),
+    body('job').trim().not().isEmpty(),
+   ],admincontroller.signupSamplePerson);
+
+
 
 module.exports = router;

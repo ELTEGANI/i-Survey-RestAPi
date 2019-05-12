@@ -8,6 +8,7 @@ const Questions  = require('./models/Questions');
 const Questiontype = require('./models/question_type');
 const QuestionAnswer = require('./models/Question_answers');
 const SurveyQuestions = require('./models/Survey_Questions');
+const SamplePerson = require('./models/SamplePerson');
 //set routes
 const adminRoute = require('./routes/adminRoute');
 
@@ -54,9 +55,13 @@ Questions.hasMany(QuestionAnswer);
 Surveys.belongsToMany(Questions,{through:SurveyQuestions});
 Questions.belongsToMany(Surveys,{through:SurveyQuestions});
 
+SamplePerson.belongsTo(Collectors);
+Collectors.hasMany(SamplePerson);
+
+
 sequelize
-    //.sync({force:true})
-    .sync()
+     .sync({force:true})
+     //.sync()  
     .then(result =>{
      console.log(result);  
     app.listen(8080); 
