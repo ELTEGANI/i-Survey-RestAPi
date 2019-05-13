@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const sequelize = require('../config/configration');
 
 const SamplePerson = sequelize.define('SamplePersons', {
-age: {
+age:{
   type: Sequelize.INTEGER,
   allowNull: false
 },
@@ -10,9 +10,21 @@ gender: {
   type: Sequelize.STRING,
   allowNull: false
 },
-job: {
+job:{
     type: Sequelize.STRING,
     allowNull: false
+},
+educationLevel:{
+    type: Sequelize.STRING,
+    allowNull: false
+},   
+addressArea:{
+  type: Sequelize.STRING,
+  allowNull: false
+},
+location:{
+  type: Sequelize.STRING,
+  allowNull: false
 }
 });
 

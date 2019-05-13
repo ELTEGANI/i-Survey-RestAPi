@@ -262,11 +262,18 @@ exports.createSurvey = (req,res,next) =>{
     const age         = req.body.age;
     const gender      = req.body.gender;
     const job         = req.body.job;
+    const educationLevel   = req.body.educationLevel;
+    const addressArea      = req.body.addressArea;
+    const location         = req.body.location;
 
     SamplePerson.create({
         age:age,
         gender:gender,
-        job:job
+        job:job,
+        educationLevel:educationLevel,
+        addressArea:addressArea,
+        location:location,
+        CollectorId:req.collectorId
         }).then(result =>{
         res.status(201).json({
          message:'SamplePerson Created Successfully',
