@@ -22,7 +22,11 @@ addressArea:{
   type: Sequelize.STRING,
   allowNull: false
 },
-location:{
+locationlongtude:{
+  type: Sequelize.STRING,
+  allowNull: false
+},
+locationlatitude:{
   type: Sequelize.STRING,
   allowNull: false
 }

@@ -7,8 +7,7 @@ const Survey = require('../models/Survey');
 const Question = require('../models/Questions');
 const isAuth = require('./Middleware/authMiddleware');
 const isCollectorAuth = require('./Middleware/authMiddlewareForCollector');  
-
-
+const Surveyresponse =require('../models/Survey_Response');
 const router = express.Router();
 
 router.post('/addadmin',[body('companyemail')
@@ -83,11 +82,28 @@ router.post('/loginCollector',admincontroller.loginCollector);
 
 
 router.post('/addSamplePerson',isCollectorAuth,[
-    body('age').trim().not().isEmpty(),
-    body('gender').trim().not().isEmpty(),
-    body('job').trim().not().isEmpty(),
-   ],admincontroller.signupSamplePerson);
+body('age').trim().not().isEmpty(),
+body('gender').trim().not().isEmpty(),
+body('job').trim().not().isEmpty(),
+body('educationLevel').trim().not().isEmpty(),
+body('longtude').trim().not().isEmpty(),
+body('latitude').trim().not().isEmpty()
+],admincontroller.signupSamplePerson);
 
+ 
+router.post('/saveResponse',isCollectorAuth,[body('sampledataid')
+    .custom((value,{req})=>{
+        return Surveyresponse.findOne({where:{SamplePersonId:value}}).then(sampledataIddoc=>{
+           if(sampledataIddoc){
+               return Promise.reject('Response Already Exists');
+           }
+        });
+    }),
+    body('surveyId').trim().not().isEmpty(),
+    body('sampledataid').trim().not().isEmpty(),
+    body('questionid').trim().not().isEmpty(),
+    body('sampledataanswer').trim().not().isEmpty(),
+],admincontroller.saveResponse);
 
 
 module.exports = router;

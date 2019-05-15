@@ -7,6 +7,8 @@ const Qusetiontype = require('../models/question_type');
 const QuestionAnswer = require('../models/Question_answers');
 const SurveyQuestion = require('../models/Survey_Questions');
 const SamplePerson = require('../models/SamplePerson')
+const SurveyResponse = require('../models/Survey_Response');
+const Responses = require('../models/Responses');
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
 
@@ -264,7 +266,8 @@ exports.createSurvey = (req,res,next) =>{
     const job         = req.body.job;
     const educationLevel   = req.body.educationLevel;
     const addressArea      = req.body.addressArea;
-    const location         = req.body.location;
+    const locationlongtude         = req.body.longtude;
+    const locationlatitude         = req.body.latitude;
 
     SamplePerson.create({
         age:age,
@@ -272,7 +275,8 @@ exports.createSurvey = (req,res,next) =>{
         job:job,
         educationLevel:educationLevel,
         addressArea:addressArea,
-        location:location,
+        locationlongtude:locationlongtude,
+        locationlatitude:locationlatitude,
         CollectorId:req.collectorId
         }).then(result =>{
         res.status(201).json({
@@ -287,3 +291,46 @@ exports.createSurvey = (req,res,next) =>{
         next(err);
      })
 }
+
+ exports.saveResponse=(req,res,next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+       const error = new Error('validation Failed');
+       error.statusCode = 422;
+       error.data = errors.array();
+       throw error
+    }
+
+    const survey_id            = req.body.surveyId;
+    const sampledata_id        = req.body.sampledataid;
+    const question_id          = req.body.questionid;
+    const sampledata_answer    = req.body.sampledataanswer;
+
+    SurveyResponse.create({
+        SurveyId:survey_id,
+        SamplePersonId:sampledata_id
+    }).then(surveyresponse_id=>{
+        Responses.create({
+            SamplePersonId:sampledata_id,
+            QuestionId:question_id,
+            surveyresponse_id:surveyresponse_id.id,
+            Answer:sampledata_answer
+        }).then(response=>{
+            res.status(201).json({
+                message:'Response Created Successfully',
+                Response:response,
+            }
+            );
+        }).catch(err=>{
+            if(!err.statusCode){
+                err.statusCode = 500;
+            }
+            next(err);
+        })
+    }).catch(err=>{
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    })
+ }

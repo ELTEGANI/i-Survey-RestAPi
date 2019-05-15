@@ -73,13 +73,13 @@ Questions.hasMany(Responses);
 
 
 sequelize
-     //.sync({force:true})
-     .sync()  
-    .then(result =>{
-     console.log(result);  
-    app.listen(8080); 
+       .sync({force:true})
+      //.sync()     
+      .then(result =>{
+      console.log(result);  
+      app.listen(8080); 
 }).catch(err =>{
-    console.log(err)
+      console.log(err)
 })
 
 
