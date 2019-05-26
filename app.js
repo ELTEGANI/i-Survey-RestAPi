@@ -64,7 +64,6 @@ Collectors.hasMany(SamplePerson);
 Surveys.belongsToMany(SamplePerson,{through:SurveyResponse});
 SamplePerson.belongsToMany(Surveys,{through:SurveyResponse});
 
-
 SurveyResponse.belongsToMany(SamplePerson,{through:Responses});
 SamplePerson.belongsToMany(SurveyResponse,{through:Responses});
 
@@ -73,9 +72,9 @@ Questions.hasMany(Responses);
 
 
 sequelize
-       .sync({force:true})
-      //.sync()     
-      .then(result =>{
+       //.sync({force:true})
+       .sync()      
+      .then(result =>{   
       console.log(result);  
       app.listen(8080); 
 }).catch(err =>{

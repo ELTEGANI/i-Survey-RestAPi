@@ -15,6 +15,10 @@ title: {
 description: {
   type: Sequelize.STRING,
   allowNull: false
+},
+surveyType: {
+  type: Sequelize.STRING,
+  allowNull: false
 }  
 });  
 

@@ -59,6 +59,7 @@ router.post('/createsurvey',isAuth,[body('title')
 })
 ,body('title').trim().trim().not().isEmpty(),
 body('description').trim().not().isEmpty(),
+body('surveyType').trim().not().isEmpty()
 ],admincontroller.createSurvey)
 
 
@@ -81,16 +82,11 @@ router.post('/createquestion',isAuth,[body('Qusetion')
 router.post('/loginCollector',admincontroller.loginCollector);
 
 
-router.post('/addSamplePerson',isCollectorAuth,[
-body('age').trim().not().isEmpty(),
-body('gender').trim().not().isEmpty(),
-body('job').trim().not().isEmpty(),
-body('educationLevel').trim().not().isEmpty(),
-body('longtude').trim().not().isEmpty(),
-body('latitude').trim().not().isEmpty()
-],admincontroller.signupSamplePerson);
+router.post('/addSamplePerson',isCollectorAuth,admincontroller.signupSamplePerson);
 
- 
+
+
+
 router.post('/saveResponse',isCollectorAuth,[body('sampledataid')
     .custom((value,{req})=>{
         return Surveyresponse.findOne({where:{SamplePersonId:value}}).then(sampledataIddoc=>{

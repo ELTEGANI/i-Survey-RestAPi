@@ -130,22 +130,24 @@ exports.createSurvey = (req,res,next) =>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
        const error = new Error('validation Failed');
-       error.statusCode = 422;
+       error.statusCode = 409;
        error.data = errors.array();
        throw error
     }
     const surveyTitle            = req.body.title;
     const surveyDescription      = req.body.description;
-
+    const surveyType             = req.body.surveyType;
+    
     Surveys.create({
         title:surveyTitle,
         description:surveyDescription,
+        surveyType:surveyType,
         AdminId:req.companyId
         }).then(result =>{
         res.status(201).json({
          message:'Survey Created Successfully',
          Surveys:result,
-     }
+     }  
      
      );
      }).catch( err =>{
@@ -163,32 +165,39 @@ exports.createSurvey = (req,res,next) =>{
        error.statusCode = 422;
        error.data = errors.array();
        throw error
-    }
+    } 
     const question      = req.body.Qusetion;
     Questions.create({
         Qusetion:question
-        })
+        })   
         .then(question =>{
             console.log(question);
             const qid = question.id;
     Qusetiontype.create({
             question_type:req.body.Qusetiontype,
             QuestionId:qid
-        }).then(qtype=>{
-           console.log(qtype);
-    QuestionAnswer.create({
-        QuestionAnswer:req.body.Qusetionanswers,
-        QuestionId:qid
-    }).then(qanswers=>{
-        console.log(qanswers);
+        }).then(res=>{
+    req.body.Qusetionanswers.map((answers) => {
+        QuestionAnswer.create({
+                    QuestionAnswer:answers.QuestionAnswer,
+                    QuestionId:qid
+                }).then(res=>{
+                  console.log(res)
+                }).catch(err=>{
+                  console.log(err)
+                })
+             })
+        })
+ 
+    .then(qanswers=>{  
     SurveyQuestion.create({
         SurveyId:req.body.Surveyid,
-        QuestionId:qid
+        QuestionId:qid   
     }).then(surveyquestion=>{
            res.status(201).json({
            message:'Question Created Successfully',
            Question:surveyquestion,
-           }
+        }
     );
     }).catch(err=>{
         if(!err.statusCode){
@@ -207,14 +216,13 @@ exports.createSurvey = (req,res,next) =>{
                 err.statusCode = 500;
             }
             next(err);
+        }).catch(err=>{
+            if(!err.statusCode){
+                err.statusCode = 500;
+            }
+            next(err);
         })
-     })
-     .catch( err =>{
-        if(!err.statusCode){
-            err.statusCode = 500;
-        }
-        next(err);
-     })
+     
  }
 
 
@@ -268,6 +276,10 @@ exports.createSurvey = (req,res,next) =>{
     const addressArea      = req.body.addressArea;
     const locationlongtude         = req.body.longtude;
     const locationlatitude         = req.body.latitude;
+    const companyfield          = req.body.companyfield;
+    const companysize           = req.body.companysize;
+    const companylocation       = req.body.companylocation;
+    const companyFoundationDate = req.body.companyFoundationDate;
 
     SamplePerson.create({
         age:age,
@@ -277,6 +289,10 @@ exports.createSurvey = (req,res,next) =>{
         addressArea:addressArea,
         locationlongtude:locationlongtude,
         locationlatitude:locationlatitude,
+        companyfield:companyfield,
+        companysize:companysize,
+        companylocation:companylocation,
+        companyFoundationDate:companyFoundationDate,
         CollectorId:req.collectorId
         }).then(result =>{
         res.status(201).json({
