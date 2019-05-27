@@ -64,7 +64,7 @@ body('surveyType').trim().not().isEmpty()
 
 
 
-router.post('/createquestion',isAuth,[body('Qusetion')
+router.post('/createquestion',isAuth,[body('question')
 .custom((value,{req})=>{
     return Question.findOne({where:{Qusetion:value}}).then(Questiondoc=>{
        if(Questiondoc){
@@ -72,9 +72,9 @@ router.post('/createquestion',isAuth,[body('Qusetion')
        }
     });
 })
-,body('Qusetion').trim().not().isEmpty()
-,body('Qusetiontype').trim().not().isEmpty()
-,body('Qusetionanswers').trim().not().isEmpty()
+,body('question').trim().not().isEmpty()
+,body('questiontype').trim().not().isEmpty()
+,body('Answers').trim().not().isEmpty()
 ,body('Surveyid').trim().not().isEmpty()
 ],admincontroller.createQuestion)
       

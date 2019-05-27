@@ -166,20 +166,20 @@ exports.createSurvey = (req,res,next) =>{
        error.data = errors.array();
        throw error
     } 
-    const question      = req.body.Qusetion;
+    const question      = req.body.question;
     Questions.create({
-        Qusetion:question
-        })   
+        Qusetion:question 
+        })    
         .then(question =>{
             console.log(question);
             const qid = question.id;
     Qusetiontype.create({
-            question_type:req.body.Qusetiontype,
+            question_type:req.body.questiontype,
             QuestionId:qid
         }).then(res=>{
-    req.body.Qusetionanswers.map((answers) => {
+    req.body.Answers.map((answers) => {
         QuestionAnswer.create({
-                    QuestionAnswer:answers.QuestionAnswer,
+                    QuestionAnswer:answers.answer,
                     QuestionId:qid
                 }).then(res=>{
                   console.log(res)
