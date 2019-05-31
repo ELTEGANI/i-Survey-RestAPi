@@ -57,7 +57,7 @@ exports.signup = (req,res,next) =>{
 
 
 exports.login = (req,res,next) => {
-       const companyemail = req.body.companyemail;
+       const companyemail = req.body.email;
        const password     = req.body.password;
        let loadedadmin;
        Admin.findOne({where:{companyemail:companyemail}})
@@ -76,8 +76,7 @@ exports.login = (req,res,next) => {
             error.statusCode = 401;
             throw error;
            }
-           const token = jwt.sign({adminId:loadedadmin.id},'QuestionaireAdminAdminAdmin',
-           {expiresIn:'24h'});
+           const token = jwt.sign({adminId:loadedadmin.id},'QuestionaireAdminAdminAdmin');
            res.status(200).json({accesstoken:token,companyId:loadedadmin.id})
        })
        .catch(err =>{
@@ -134,10 +133,12 @@ exports.createSurvey = (req,res,next) =>{
        error.data = errors.array();
        throw error
     }
+    
     const surveyTitle            = req.body.title;
     const surveyDescription      = req.body.description;
     const surveyType             = req.body.surveyType;
     
+
     Surveys.create({
         title:surveyTitle,
         description:surveyDescription,
@@ -247,8 +248,7 @@ exports.createSurvey = (req,res,next) =>{
          throw error;
         }
         const token = jwt.sign({CollectorId:loadedCollector.id,
-            AdminId:loadedCollector.AdminId},'CollectorAdminAdminAdmin',
-        {expiresIn:'24h'});
+            AdminId:loadedCollector.AdminId},'CollectorAdminAdminAdmin');
         res.status(200).json({accesstoken:token,AdminId:loadedCollector.AdminId})
     })
     .catch(err =>{
