@@ -53,11 +53,11 @@ exports.signup = (req,res,next) =>{
         )  
     })
 }
-
+       
 
 
 exports.login = (req,res,next) => {
-       const companyemail = req.body.email;
+       const companyemail = req.body.companyemail;
        const password     = req.body.password;
        let loadedadmin;
        Admin.findOne({where:{companyemail:companyemail}})
@@ -69,7 +69,7 @@ exports.login = (req,res,next) => {
            }
            loadedadmin = useradmin;
            return bcrypt.compare(password,useradmin.password);
-       })  
+       })    
        .then(isEqual=>{
            if(!isEqual){
             const error = new Error('Worng Password');
@@ -329,14 +329,13 @@ exports.createSurvey = (req,res,next) =>{
         Responses.create({
             SamplePersonId:sampledata_id,
             QuestionId:question_id,
-            surveyresponse_id:surveyresponse_id.id,
+            SurveyResonseId:surveyresponse_id.id,
             Answer:sampledata_answer
         }).then(response=>{
             res.status(201).json({
                 message:'Response Created Successfully',
                 Response:response,
-            }
-            );
+            });
         }).catch(err=>{
             if(!err.statusCode){
                 err.statusCode = 500;
