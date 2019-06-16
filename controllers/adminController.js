@@ -349,3 +349,30 @@ exports.createSurvey = (req,res,next) =>{
         next(err);
     })
  }
+
+
+
+
+ exports.getAllSamplePerson=(req,res,next)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+       const error = new Error('validation Failed');
+       error.statusCode = 422;
+       error.data = errors.array();
+       throw error
+    }
+    const survey_id            = req.body.surveyId;
+    SurveyResponse.count({where:{'SurveyId':survey_id}})
+    .then(participaters=>{
+        res.status(201).json({
+            message:'Participators In Survey',
+            Participators:participaters,
+      });
+    }).catch(err=>{
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    })
+    
+ }

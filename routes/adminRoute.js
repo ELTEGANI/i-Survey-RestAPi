@@ -102,4 +102,8 @@ router.post('/saveResponse',isCollectorAuth,[body('sampledataid')
 ],admincontroller.saveResponse);
 
 
+router.get('/getallsampleperson',isCollectorAuth,
+[body('surveyId').trim().not().isEmpty()],admincontroller.getAllSamplePerson)
+
+
 module.exports = router;
